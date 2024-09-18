@@ -13,10 +13,10 @@ print "===================================================================== "
 print "   "
 print "   "
 print "    ------------------------ "
-print "   "[•] Cyber Sederhana Team [•]"
+print "   [•] Cyber Sederhana Team [•]"
 print "    ------------------------ "
 print "   "
-print "		"           
+print "   "           
 print "===================================================================== "
 def findAdmin():
 	f = open("shell.txt","r");
