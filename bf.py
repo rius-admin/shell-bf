@@ -1,45 +1,36 @@
+import requests
+from multiprocessing.dummy import Pool
 
-import requests,from termcolor import colored,from colorama import Fore,import colorama,from tqdm import tqdm,import argparse,import threading,import time,import datetime
+class Domain:
+    def __init__(self, domain):
+        self.domain = domain
+    
+    def checkShell(self):
+        shellFiles = open('shell.txt', 'r')
+        for path in shellFiles:
+            path = path.replace('\n', '')
+            r = requests.get(self.domain+path)
+            if "drwxr" in r.text:
+                print("[{}{}] > Found Shell!".format(self.domain, path))
+                saveres = open("result/shellz.txt")
+                saveres.write(self.domain+'\n')
+            else:
+                print("[{}{}] > Shell not Found!".format(self.domain, path))
 
-colorama.init()
+def asuna(list):
+    website = Domain(list)
+    website.checkShell()
 
-def logo():
-    print(Fore.RED+"""
-     _       _           _       _____ _           _           
-    / \   __| |_ __ ___ (_)_ __ |  ___(_)_ __   __| | ___ _ __ 
-   / _ \ / _` | '_ ` _ \| | '_ \| |_  | | '_ \ / _` |/ _ \ '__|
-  / ___ \ (_| | | | | | | | | | |  _| | | | | | (_| |  __/ |   
- /_/   \_\__,_|_| |_| |_|_|_| |_|_|   |_|_| |_|\__,_|\___|_|   
-                                                               
+def main():
+    try:
+        urList = open(input("root@weblist~# "), "r").read().split("\n")
+        thread = int(input("root@threads~# "))
+        pool = Pool(thread)
+        pool.map(asuna, urList)
+        pool.close()
+        pool.join
+    except:
+        pass
 
-By cs
-
-command = jagoadminfinder.py -t <Site> using http://
-""")    
-wordlist = open("shell.txt","r")
-def findPanel(url):
-    for words in wordlist:
-        words = words.strip()
-        req = requests.get(url+"/"+words)
-        if req.status_code == 200:
-            print(req.url)
-parser = argparse.ArgumentParser("""
-python3 AdminFinder -t [url]
-ex:python3 AdminFinder -t http://google.com
-""")
-parser.add_argument("-t","--t")
-args = parser.parse_args()
-url = args.t
-if url !=None:
-    for _ in tqdm(range(100),
-                  desc="Loading...",
-                  ascii=False, ncols=75):
-        time.sleep(0.3) #loading...
-    for i in range(50):
-        t = threading.Thread(target=findPanel,args=(url,))
-        t.start()
-else:
-    logo()
-
-
-logo()
+if __name__ == '__main__':
+    main()
