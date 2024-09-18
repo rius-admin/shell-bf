@@ -3,36 +3,98 @@
 #Editor recode Mr.Rius
 
 from urllib2 import Request, urlopen, URLError, HTTPError
-class Domain:
-    def __init__(self, domain):
-        self.domain = domain
-    
-    def checkShell(self):
-        shellFiles = open('shell.txt', 'r')
-        for path in shellFiles:
-            path = path.replace('\n', '')
-            r = requests.get(self.domain+path)
-            if "drwxr" in r.text:
-                print("[{}{}] > Found Shell!".format(self.domain, path))
-                saveres = open("result/shellz.txt")
-                saveres.write(self.domain+'\n')
-            else:
-                print("[{}{}] > Shell not Found!".format(self.domain, path))
+import requests, os, sys
+from requests.exceptions import ConnectionError, Timeout
+from colorama import Fore
 
-def asuna(list):
-    website = Domain(list)
-    website.checkShell()
+version = "1.0"
+program_name = sys.argv[0]
+lem = len(sys.argv)
+result = 'result-scan-admin.txt'
 
-def main():
-    try:
-        urList = open(input("root@weblist~# "), "r").read().split("\n")
-        thread = int(input("root@threads~# "))
-        pool = Pool(thread)
-        pool.map(asuna, urList)
-        pool.close()
-        pool.join
-    except:
-        pass
+g = Fore.GREEN
+r = Fore.RED
+reset = Fore.RESET
 
-if __name__ == '__main__':
-    main()
+usage = (f"usage : python3 {program_name} <domain>")
+banner = (f"""
+             ;::::;                          
+           ;::::; :;                          
+         ;:::::'   :;                         
+        ;:::::;     ;.                        
+       ,:::::'       ;           OOO      
+       ::::::;       ;          OOOOO    
+       ;:::::;       ;         OOOOOOOO      
+      ,;::::::;     ;'         / OOOOOOO      
+    ;:::::::::`. ,,,;.        /  / DOOOOOO    
+  .';:::::::::::::::::;,     /  /     DOOOO   
+ ,::::::;::::::;;;;::::;,   /  /        DOOO  
+;`::::::`'::::::;;;::::: ,#/  /          DOOO 
+:`:::::::`;::::::;;::: ;::#  /            DOOO
+::`:::::::`;:::::::: ;::::# /              DOO
+`:`:::::::`;:::::: ;::::::#/               DOO
+ :::`:::::::`;; ;:::::::::##                OO
+ ::::`:::::::`;::::::::;:::#                OO
+ `:::::`::::::::::::;'`:;::#                O 
+  `:::::`::::::::;' /  / `:#                  
+   ::::::`:::::;'  /  /   `#
+
+{r}The Angel Of Death {reset}- {g}Admin Finder{reset}
+Version : {version}
+{usage}""")
+
+
+def admin_checker():
+	if lem != 2:
+		print(banner)
+		sys.exit(0)
+	else:
+		domain = sys.argv[1]
+		if not domain.startswith("http"):
+			domain = "http://" + domain
+		
+		get_wordlist = "https://fooster1337.github.io/assets/wordlist.txt"
+		try:
+			word = requests.get(get_wordlist, timeout=10)
+			word.raise_for_status()
+			get_word = word.content.decode('utf-8')
+		except (ConnectionError, Timeout):
+			print(f"{r}Failed to retrieve wordlist. Please check your connection.{reset}")
+			sys.exit(0)
+		
+		try:
+			getStatus = requests.get(domain, timeout=10)
+			getCode = getStatus.status_code
+		except (ConnectionError, Timeout):
+			print(f"{r}Unable to reach {domain}. Please check the domain or your connection.{reset}")
+			sys.exit(0)
+		
+		if getCode == 200:
+			print(f"Scanning : {domain}")
+			print(f"Result save on {result}")
+			for i in get_word.splitlines():
+				dom_pls = (f"{domain}/{i}")
+				try:
+					rq = requests.get(dom_pls, timeout=10)
+					req = rq.status_code
+					if req == 200:
+						print(f"{g}[Found!] {reset}-> {dom_pls} [{g}{req}{reset}]")
+						with open(result, 'a') as f:
+							f.write(dom_pls + "\n")
+					else:
+						print(f"{r}[NoLuck] {reset}-> {dom_pls} [{r}{req}{reset}]")
+				except (ConnectionError, Timeout):
+					print(f"{r}[Error] {reset}-> {dom_pls} [Connection/Timeout Error]")
+		else:
+			print(f"{r}Unknown Error : {getCode}{reset}\n{usage}")
+			sys.exit(0)
+
+if __name__ == "__main__":
+	try:
+		admin_checker()
+	except KeyboardInterrupt:
+		print(f"\n{r}Exit...{reset}")
+		sys.exit(0)
+	except ModuleNotFoundError:
+		os.system("pip3 install requests colorama")
+		admin_checker()
