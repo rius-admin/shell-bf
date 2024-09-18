@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+#Editor recode Mr.Rius
 import requests
 from multiprocessing.dummy import Pool
 
