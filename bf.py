@@ -9,17 +9,10 @@ def Space(j):
 		print " ",
 		i+=1
 
-print "===================================================================== "
-print "   "
-print "   "
-print "    ------------------------ "
-print "   [•] Cyber Sederhana Team [•]"
-print "    ------------------------ "
-print "   "
-print "   "           
-print "===================================================================== "
+print " "           
+print " "
 def findAdmin():
-	f = open("shell.txt","r");
+	f = open("a.txt","r");
 	link = raw_input("contoh ; target.co  \n bot-robots(scan) : ")
 	print "   "
 	print "   "
