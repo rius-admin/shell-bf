@@ -4,8 +4,6 @@
 
 import requests, os, sys
 from requests.exceptions import ConnectionError, Timeout
-from colorama
-import Fore
 
 version = "1.0"
 program_name = sys.argv[0]
