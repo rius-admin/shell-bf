@@ -14,7 +14,6 @@ y.php
 z.php
 cpanel
 @hack$&+_.php
-#cmd$_-!+%.php
 $_shell&-!x.php
 &backdoor+(//).php
 -php?%&~.php
