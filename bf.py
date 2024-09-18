@@ -1,43 +1,55 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 #Editor recode Mr.Rius
-from urllib2 import Request, urlopen, URLError, HTTPError
+import requests
+from termcolor import colored
+from colorama import Fore
+import colorama
+from tqdm import tqdm
+import argparse
+import threading
+import time
+import datetime
 
-def Space(j):
-	i = 0
-	while i<=j:
-		print " ",
-		i+=1
+colorama.init()
 
-print " "           
-print " "
-def findAdmin():
-	f = open("a.txt","r");
-	link = raw_input("contoh ; target.co  \n bot-robots(scan) : ")
-	print "   "
-	print "   "
-	print "\n\nbot-robots(scan) : \n"
-	while True:
-		sub_link = f.readline()
-		if not sub_link:
-			break
-		req_link = "http://"+link+"/"+sub_link
-		req = Request(req_link)
-		try:
-			response = urlopen(req)
-		except HTTPError as e:
-			continue
-		except URLError as e:
-			continue
-		else:
-			print "hasil  => ",req_link
+def logo():
+    print(Fore.RED+"""
+     _       _           _       _____ _           _           
+    / \   __| |_ __ ___ (_)_ __ |  ___(_)_ __   __| | ___ _ __ 
+   / _ \ / _` | '_ ` _ \| | '_ \| |_  | | '_ \ / _` |/ _ \ '__|
+  / ___ \ (_| | | | | | | | | | |  _| | | | | | (_| |  __/ |   
+ /_/   \_\__,_|_| |_| |_|_|_| |_|_|   |_|_| |_|\__,_|\___|_|   
+                                                               
 
-def Credit():
-	Space(9); print "  ------------------------"
-	Space(9); print "[•] cybersederhanateam.id [•]"
-	Space(9); print "  ------------------------"
-	Space(9); print " "
-	Space(9); print " "
+By cst
 
-Credit()
-findAdmin()
+command = jagoadminfinder.py -t <Site> using http://
+""")    
+wordlist = open("shell.txt","r")
+def findPanel(url):
+    for words in wordlist:
+        words = words.strip()
+        req = requests.get(url+"/"+words)
+        if req.status_code == 200:
+            print(req.url)
+parser = argparse.ArgumentParser("""
+python3 AdminFinder -t [url]
+ex:python3 AdminFinder -t http://google.com
+""")
+parser.add_argument("-t","--t")
+args = parser.parse_args()
+url = args.t
+if url !=None:
+    for _ in tqdm(range(100),
+                  desc="Loading...",
+                  ascii=False, ncols=75):
+        time.sleep(0.3) #loading...
+    for i in range(50):
+        t = threading.Thread(target=findPanel,args=(url,))
+        t.start()
+else:
+    logo()
+
+
+logo()
