@@ -44,7 +44,7 @@ def Credit():
 	Space(9); print "[•] cybersederhanateam.id [•]"
 	Space(9); print "  ------------------------"
 	Space(9); print " "
-  Space(9); print " "
+	Space(9); print " "
 
 Credit()
 findAdmin()
