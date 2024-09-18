@@ -2,8 +2,7 @@
 # -*- coding: UTF-8 -*-
 #Editor recode Mr.Rius
 
-import requests,from multiprocessing.dummy import Pool
-
+from urllib2 import Request, urlopen, URLError, HTTPError
 class Domain:
     def __init__(self, domain):
         self.domain = domain
