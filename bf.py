@@ -10,10 +10,6 @@ program_name = sys.argv[0]
 lem = len(sys.argv)
 result = 'result-scan-admin.txt'
 
-g = Fore.GREEN
-r = Fore.RED
-reset = Fore.RESET
-
 usage = (f"usage : python3 {program_name} <domain>")
 banner = (f"""
              ;::::;                          
