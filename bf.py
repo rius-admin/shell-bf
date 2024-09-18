@@ -1,15 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-#Editor recode Mr.Rius
 
-from termcolor import colored
-from colorama import Fore
-import colorama
-from tqdm import tqdm
-import argparse
-import threading
-import time
-import datetime
+import requests,from termcolor import colored,from colorama import Fore,import colorama,from tqdm import tqdm,import argparse,import threading,import time,import datetime
 
 colorama.init()
 
@@ -22,7 +12,7 @@ def logo():
  /_/   \_\__,_|_| |_| |_|_|_| |_|_|   |_|_| |_|\__,_|\___|_|   
                                                                
 
-By cst
+By cs
 
 command = jagoadminfinder.py -t <Site> using http://
 """)    
