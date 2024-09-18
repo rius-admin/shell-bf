@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 #Editor recode Mr.Rius
 
-from urllib2 import Request, urlopen, URLError, HTTPError
 import requests, os, sys
 from requests.exceptions import ConnectionError, Timeout
 from colorama import Fore
