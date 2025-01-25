@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# Editor recode Mr.Rius
+# Script Brute Shell by Mr.Rius
 
 import requests
 from colorama import Fore, Style, init
@@ -8,67 +8,64 @@ from colorama import Fore, Style, init
 # Inisialisasi Colorama
 init(autoreset=True)
 
-# File yang berisi target URL (satu per baris)
+# File yang berisi target URL
 target_file = 'target.txt'
 
-# File yang berisi daftar endpoint shell yang umum
+# File yang berisi daftar endpoint shell
 wordlist_file = 'wordlist.txt'
 
-# Nama file untuk menyimpan hasil scanning
+# Nama file untuk menyimpan hasil
 result_file = 'result_shell.txt'
 
-# Timeout untuk request
+# Timeout request
 REQUEST_TIMEOUT = 5
 
-# Fungsi untuk mengecek apakah URL dapat diakses dan status code 200
-def check_url(url):
+# Fungsi untuk mengecek endpoint shell
+def check_shell(target, endpoint):
+    url = target.rstrip('/') + '/' + endpoint
     try:
         response = requests.get(url, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            return True
-    except requests.exceptions.RequestException as e:
-        print("Error saat mengakses {}: {}".format(url, e))
-    return False
+            return True, url
+    except requests.exceptions.RequestException:
+        return False, None
+    return False, None
 
-# Baca file target.txt untuk mendapatkan daftar target URL
+# Load daftar target dari file
 try:
     with open(target_file, 'r') as f:
         targets = f.read().splitlines()
 except IOError:
-    print("File {} tidak ditemukan.".format(target_file))
+    print(f"{Fore.RED}File target.txt tidak ditemukan.{Style.RESET_ALL}")
     exit()
 
-# Baca file wordlist.txt untuk mendapatkan daftar endpoint shell
+# Load daftar endpoint dari file
 try:
     with open(wordlist_file, 'r') as f:
-        wordlist = f.read().splitlines()
+        endpoints = f.read().splitlines()
 except IOError:
-    print("File {} tidak ditemukan.".format(wordlist_file))
+    print(f"{Fore.RED}File wordlist.txt tidak ditemukan.{Style.RESET_ALL}")
     exit()
 
-# Buka file untuk menuliskan hasil
+# Hasil scanning akan disimpan di result_shell.txt
 with open(result_file, 'w') as result:
-    # Mulai proses scanning setiap target
     for target in targets:
-        print("\nScanning target: {}".format(target))
-        result.write("\nScanning target: {}\n".format(target))
-        
-        found_any = False
-        
-        # Loop setiap endpoint di wordlist
-        for path in wordlist:
-            url = target.rstrip('/') + '/' + path
-            
-            # Cek apakah URL valid dan dapat diakses (status code 200)
-            if check_url(url):
-                print("{}[Ditemukan] {} (200 OK){}".format(Fore.GREEN, url, Style.RESET_ALL))
-                result.write("[Ditemukan] {} (200 OK)\n".format(url))
-                found_any = True
-            else:
-                print("{}[Tidak ditemukan] {}{}".format(Fore.RED, url, Style.RESET_ALL))
-        
-        if not found_any:
-            print("{}[Tidak ada shell yang ditemukan untuk target ini]{}".format(Fore.YELLOW, Style.RESET_ALL))
-            result.write("[Tidak ada shell yang ditemukan untuk target ini]\n")
+        print(f"\n{Fore.CYAN}Scanning target: {target}{Style.RESET_ALL}")
+        result.write(f"Scanning target: {target}\n")
+        found = False
 
-print("\nProses selesai. Hasil disimpan di {}".format(result_file))
+        for endpoint in endpoints:
+            success, shell_url = check_shell(target, endpoint)
+            if success:
+                print(f"{Fore.GREEN}[Ditemukan] Shell: {shell_url} (200 OK){Style.RESET_ALL}")
+                result.write(f"[Ditemukan] Shell: {shell_url} (200 OK)\n")
+                found = True
+                break
+            else:
+                print(f"{Fore.YELLOW}[Tidak ditemukan] {target}/{endpoint}{Style.RESET_ALL}")
+
+        if not found:
+            print(f"{Fore.RED}[Tidak ada shell ditemukan untuk target ini]{Style.RESET_ALL}")
+            result.write("[Tidak ada shell ditemukan untuk target ini]\n")
+
+print(f"\n{Fore.CYAN}Proses selesai. Hasil disimpan di {result_file}{Style.RESET_ALL}")
