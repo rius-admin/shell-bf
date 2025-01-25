@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-#Editor recode Mr.Rius
+# Editor recode Mr.Rius
 
 import requests
-from colorama import Fore, Style
+from colorama import Fore, Style, init
+
+# Inisialisasi Colorama
+init(autoreset=True)
 
 # File yang berisi target URL (satu per baris)
 target_file = 'target.txt'
@@ -14,10 +17,13 @@ wordlist_file = 'wordlist.txt'
 # Nama file untuk menyimpan hasil scanning
 result_file = 'result_shell.txt'
 
+# Timeout untuk request
+REQUEST_TIMEOUT = 5
+
 # Fungsi untuk mengecek apakah URL dapat diakses dan status code 200
 def check_url(url):
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
             return True
     except requests.exceptions.RequestException as e:
