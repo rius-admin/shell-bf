@@ -21,7 +21,7 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-     print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
+    print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}\n")  # Menampilkan nama tim
     print(f"{Fore.BLUE}      " + "=" * 30 + f"{Style.RESET_ALL}\n")
     print(" ")
     print(" ")
