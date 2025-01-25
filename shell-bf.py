@@ -20,10 +20,10 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-    print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
+    print(f"{Fore.BLUE}" + "=" * 78 + f"{Style.RESET_ALL}\n")
     print(f"{Fore.GREEN}Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
-    print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.ORANGE}by mr.rius{Style.RESET_ALL}\n")
+    print(f"{Fore.BLUE}" + "=" * 78 + f"{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}by mr.rius{Style.RESET_ALL}\n")
     print(f"{Fore.YELLOW}contoh :{Style.RESET_ALL}\n")
     print(f"{Fore.YELLOW}( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
 
