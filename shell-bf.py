@@ -24,10 +24,12 @@ def clear_screen():
 def banner():
     """Menampilkan banner tim."""
     clear_screen()
-    print(f"{Fore.CYAN}" + "=" * 40)
-    print("         Cyber Sederhana Team")
-    print("=" * 40 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}Gunakan script ini hanya untuk tujuan legal dan etis.{Style.RESET_ALL}\n")
+    print(f"{Fore.CYAN}" + "=" * 50)
+    print(f"{Fore.CYAN}" + "Cyber Sederhana Team" * 50)
+    print(f"{Fore.CYAN}" + "=" * 50)
+    print(" " * 50 + f"{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}by Mr.Rius{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}gunain buat tickung shell anak dibeli ya hehe{Style.RESET_ALL}\n")
 
 
 def check_url(url):
@@ -62,42 +64,42 @@ def brute_force(targets, paths):
 
 
 def main():
-    banner()
-    print(f"{Fore.CYAN}Ketik 'start' untuk memulai proses brute shell.{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}Ketik 'exit' untuk keluar dari program.{Style.RESET_ALL}")
-    
-    while True:
-        command = input(f"{Fore.GREEN}Cyber Sederhana Team >> {Style.RESET_ALL}").strip().lower()
+    try:
+        # Membaca file target (URL)
+        with open(TARGET_FILE, "r") as f:
+            targets = f.read().splitlines()
+
+        # Membaca file wordlist (path shell)
+        with open(WORDLIST_FILE, "r") as f:
+            paths = f.read().splitlines()
+
+        # Memulai brute force
+        results = brute_force(targets, paths)
+
+        # Menyimpan hasil ke file
+        with open(OUTPUT_FILE, "w") as f:
+            f.write("\n".join(results))
         
-        if command == "start":
-            try:
-                # Membaca file target
-                with open(TARGET_FILE, "r") as f:
-                    targets = f.read().splitlines()
-
-                # Membaca file wordlist
-                with open(WORDLIST_FILE, "r") as f:
-                    paths = f.read().splitlines()
-
-                # Memulai brute force
-                results = brute_force(targets, paths)
-
-                # Menyimpan hasil ke file
-                with open(OUTPUT_FILE, "w") as f:
-                    f.write("\n".join(results))
-                print(f"\n{Fore.GREEN}Proses selesai. Hasil disimpan di {OUTPUT_FILE}{Style.RESET_ALL}")
-            except FileNotFoundError as e:
-                print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
-            except Exception as e:
-                print(f"{Fore.RED}Error tak terduga: {e}{Style.RESET_ALL}")
-        
-        elif command == "exit":
-            print(f"{Fore.YELLOW}Keluar dari program. Terima kasih.{Style.RESET_ALL}")
-            break
-
-        else:
-            print(f"{Fore.RED}Perintah tidak dikenal. Ketik 'start' untuk memulai atau 'exit' untuk keluar.{Style.RESET_ALL}")
+        print(f"\n{Fore.GREEN}Proses selesai. Hasil disimpan di {OUTPUT_FILE}{Style.RESET_ALL}")
+    except FileNotFoundError as e:
+        print(f"{Fore.RED}target kosong:(: {e}{Style.RESET_ALL}")
+    except Exception as e:
+        print(f"{Fore.RED}ada yg ga beres nih{e}{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
-    main()
+    banner()
+    print(f"{Fore.CYAN}Ketik 'start' = memulai {Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Ketik 'exit' = keluar {Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Ketik 'CTRL + C' = stop {Style.RESET_ALL}")
+    
+    while True:
+        command = input(f"{Fore.GREEN} lanjut >> {Style.RESET_ALL}").strip().lower()
+        
+        if command == "start":
+            main()  # Memulai proses brute force
+        elif command == "exit":
+            print(f"{Fore.YELLOW}Keluar dari program. Terima kasih.{Style.RESET_ALL}")
+            break
+        else:
+            print(f"{Fore.RED}Perintah tidak dikenal. Ketik 'start' untuk memulai atau 'exit' untuk keluar.{Style.RESET_ALL}")
