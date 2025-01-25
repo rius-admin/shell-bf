@@ -4,30 +4,39 @@
 
 import requests
 from colorama import Fore, Style, init
+import os
+import threading
 
 # Inisialisasi colorama
 init(autoreset=True)
 
-REQUEST_TIMEOUT = 5  # Timeout permintaan dalam detik
+REQUEST_TIMEOUT = 3  # Timeout permintaan lebih singkat (dalam detik)
+MAX_THREADS = 10     # Jumlah thread maksimal untuk paralelisasi
 
+# Inisialisasi session untuk connection pooling
+session = requests.Session()
+session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-    print(f"{Fore.BLUE}" + "=" * 50)
-    print(f"{Fore.GREEN}" + "         Cyber Sederhana Team         ")
-    print(f"{Fore.BLUE}" + "=" * 50 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}Gunakan script ini hanya untuk tujuan legal dan etis.{Style.RESET_ALL}\n")
+    print(f"{Fore.BLUE}" + "=" * 75)
+    print(" ") 
+    print(f"{Fore.GREEN}" + "                     Cyber Sederhana Team         ")
+    print(" ") 
+    print(f"{Fore.BLUE}" + "=" * 75 + f"{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}by Mr.Rius{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}gunain untuk tickung shell anak cibel ya hehe{Style.RESET_ALL}\n")
 
 
 def check_url(url):
-    """Memeriksa apakah URL memberikan status 200."""
+    """Memeriksa apakah URL memberikan status 200 menggunakan session."""
     try:
-        response = requests.get(url, timeout=REQUEST_TIMEOUT)
+        response = session.get(url, timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            return True
+            return url  # Mengembalikan URL yang berhasil ditemukan
     except requests.exceptions.RequestException:
         pass
-    return False
+    return None
 
 
 def load_wordlist(wordlist_file):
@@ -41,41 +50,73 @@ def load_wordlist(wordlist_file):
         return []
 
 
-def brute_force(target, paths):
-    """Melakukan brute force untuk menemukan shell di target."""
-    print(f"\n{Fore.BLUE}[INFO] Memulai brute force pada target: {target}{Style.RESET_ALL}")
-    found = False
-
+def brute_force_worker(target, paths, results):
+    """Thread worker untuk melakukan brute force pada target."""
     for path in paths:
         url = f"{target.rstrip('/')}/{path}"
-        if check_url(url):
+        result = check_url(url)
+        if result:
+            results.append(result)
             print(f"{Fore.GREEN}[FOUND] {url} (200 OK){Style.RESET_ALL}")
-            found = True
         else:
             print(f"{Fore.RED}[NOT FOUND] {url}{Style.RESET_ALL}")
-    
-    if not found:
-        print(f"{Fore.YELLOW}[NO SHELL FOUND] Tidak ada shell ditemukan pada target ini.{Style.RESET_ALL}")
+
+
+def brute_force(target, paths):
+    """Melakukan brute force untuk menemukan shell di target dengan paralelisasi menggunakan thread."""
+    print(f"\n{Fore.BLUE}[INFO] Memulai brute force pada target: {target}{Style.RESET_ALL}")
+
+    results = []
+    threads = []
+
+    # Membagi wordlist menjadi beberapa bagian untuk di proses paralel
+    chunk_size = len(paths) // MAX_THREADS
+    for i in range(0, len(paths), chunk_size):
+        chunk = paths[i:i+chunk_size]
+        thread = threading.Thread(target=brute_force_worker, args=(target, chunk, results))
+        threads.append(thread)
+        thread.start()
+
+    # Menunggu semua thread selesai
+    for thread in threads:
+        thread.join()
+
+    if results:
+        print(f"{Fore.GREEN}[INFO] Done ditemukan √ {len(results)} shell.{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.YELLOW}[NO SHELL FOUND] Yha kosong :({Style.RESET_ALL}")
 
 
 def main():
-    banner()
+    while True:
+        # Menampilkan banner dan meminta URL target
+        banner()
 
-    # Memuat file wordlist.txt
-    wordlist_file = 'wordlist.txt'
-    wordlist = load_wordlist(wordlist_file)
-    if not wordlist:
-        return  # Jika tidak ada wordlist yang valid, keluar dari program
+        # Memuat file wordlist.txt
+        wordlist_file = 'wordlist.txt'
+        wordlist = load_wordlist(wordlist_file)
+        if not wordlist:
+            return  # Jika tidak ada wordlist yang valid, keluar dari program
 
-    target = input(f"{Fore.GREEN}Masukkan URL target (contoh: http://example.com): {Style.RESET_ALL}").strip()
+        target = input(f"{Fore.GREEN}( contoh: https://cybersederhanateam.id ): {Style.RESET_ALL}").strip()
 
-    # Validasi input URL
-    if not target.startswith("http://") and not target.startswith("https://"):
-        print(f"{Fore.RED}Error: URL harus diawali dengan 'http://' atau 'https://'{Style.RESET_ALL}")
-        return
+        # Validasi input URL
+        if not target.startswith("http://") and not target.startswith("https://"):
+            print(f"{Fore.RED}Error: diawali dengan 'http://' atau 'https://'{Style.RESET_ALL}")
+            continue
 
-    # Memulai brute force
-    brute_force(target, wordlist)
+        # Memulai brute force
+        brute_force(target, wordlist)
+
+        # Menanyakan apakah ingin melanjutkan ke target lain
+        continue_prompt = input(f"{Fore.YELLOW}Ingin melakukan brute force lagi? (y/n): {Style.RESET_ALL}").strip().lower()
+        if continue_prompt != 'y':
+            print(f"{Fore.GREEN}Terima kasih telah menggunakan tool ini!{Style.RESET_ALL}")
+            break
+
+        # Kembali ke "tempat kosong" (clear screen)
+        os.system('clear')  # untuk Linux/macOS
+        # os.system('cls')  # untuk Windows, gunakan ini jika di cmd atau PowerShell
 
 
 if __name__ == "__main__":
