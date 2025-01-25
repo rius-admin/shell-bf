@@ -6,6 +6,7 @@ import requests
 from colorama import Fore, Style, init
 import os
 import threading
+import pyfiglet  # Modul untuk ASCII Art
 
 # Inisialisasi colorama
 init(autoreset=True)
@@ -17,15 +18,21 @@ MAX_THREADS = 10     # Jumlah thread maksimal untuk paralelisasi
 session = requests.Session()
 session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
+
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-    print(f"{Fore.BLUE}" + "=" * 75)
-    print(" ") 
-    print(f"{Fore.GREEN}" + "                     Cyber Sederhana Team         ")
-    print(" ") 
-    print(f"{Fore.BLUE}" + "=" * 75 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}by Mr.Rius{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}gunain untuk tickung shell anak cibel ya hehe{Style.RESET_ALL}\n")
+    # Gunakan pyfiglet untuk membuat teks besar untuk nama tim
+    team_name = pyfiglet.figlet_format("Cyber Sederhana Team", font="slant")
+    
+    print(f"{Fore.BLUE}" + "=" * 65)
+    print(f"{Fore.GREEN}" + team_name)  # Menampilkan nama tim dalam ASCII Art
+    print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
+    print (" ")
+    print (" ") 
+    print(f"{Fore.YELLOW}by mr.rius{Style.RESET_ALL}\n")
+    print (" ") 
+    print(f"{Fore.YELLOW}contoh :{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
 
 
 def check_url(url):
@@ -64,7 +71,7 @@ def brute_force_worker(target, paths, results):
 
 def brute_force(target, paths):
     """Melakukan brute force untuk menemukan shell di target dengan paralelisasi menggunakan thread."""
-    print(f"\n{Fore.BLUE}[INFO] Memulai brute force pada target: {target}{Style.RESET_ALL}")
+    print(f"\n{Fore.BLUE}[INFO] Attack target: {target}{Style.RESET_ALL}")
 
     results = []
     threads = []
@@ -82,7 +89,7 @@ def brute_force(target, paths):
         thread.join()
 
     if results:
-        print(f"{Fore.GREEN}[INFO] Done ditemukan √ {len(results)} shell.{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}[INFO] Done √ {len(results)} shell.{Style.RESET_ALL}")
     else:
         print(f"{Fore.YELLOW}[NO SHELL FOUND] Yha kosong :({Style.RESET_ALL}")
 
@@ -98,11 +105,11 @@ def main():
         if not wordlist:
             return  # Jika tidak ada wordlist yang valid, keluar dari program
 
-        target = input(f"{Fore.GREEN}( contoh: https://cybersederhanateam.id ): {Style.RESET_ALL}").strip()
+        target = input(f"{Fore.GREEN} Scan-bf ==> {Style.RESET_ALL}").strip()
 
         # Validasi input URL
         if not target.startswith("http://") and not target.startswith("https://"):
-            print(f"{Fore.RED}Error: diawali dengan 'http://' atau 'https://'{Style.RESET_ALL}")
+            print(f"{Fore.RED}Error: URL harus diawali dengan 'http://' atau 'https://'{Style.RESET_ALL}")
             continue
 
         # Memulai brute force
@@ -111,7 +118,7 @@ def main():
         # Menanyakan apakah ingin melanjutkan ke target lain
         continue_prompt = input(f"{Fore.YELLOW}Ingin melakukan brute force lagi? (y/n): {Style.RESET_ALL}").strip().lower()
         if continue_prompt != 'y':
-            print(f"{Fore.GREEN}Terima kasih telah menggunakan tool ini!{Style.RESET_ALL}")
+            print(f"{Fore.GREEN}Thx udah mampir{Style.RESET_ALL}")
             break
 
         # Kembali ke "tempat kosong" (clear screen)
