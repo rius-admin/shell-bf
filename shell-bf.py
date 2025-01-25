@@ -21,12 +21,15 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
+    print(" ")
+    print(" ")
+    print(" ")
+    print(" ")
     print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}\n")  # Menampilkan nama tim
-    print(f"{Fore.BLUE}      " + "=" * 30 + f"{Style.RESET_ALL}\n")
+    print("                     by mr.rius")
+    print(f"{Fore.BLUE}      " + "=" * 22 + f"{Style.RESET_ALL}\n")
     print(" ")
-    print(" ")
-    print(f"{Fore.YELLOW}       by mr.rius{Style.RESET_ALL}\n")
-    print(" ")
+    print(" ") 
     print(f"{Fore.YELLOW}       contoh :{Style.RESET_ALL}\n")
     print(f"{Fore.YELLOW}          ( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
     print(" ")
@@ -112,7 +115,7 @@ def main():
         return  # Jika tidak ada wordlist yang valid, keluar dari program
 
     while True:
-        target = input(f"{Fore.GREEN} Scan-bf ==> {Style.RESET_ALL}").strip()
+        target = input(f"{Fore.GREEN}      Scan-bf  ==> {Style.RESET_ALL}").strip()
 
         # Validasi input URL
         if not target.startswith("http://") and not target.startswith("https://"):
