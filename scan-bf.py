@@ -27,31 +27,31 @@ def check_url(url):
         if response.status_code == 200:
             return True
     except requests.exceptions.RequestException as e:
-        print(f"Error saat mengakses {url}: {e}")
+        print("Error saat mengakses {}: {}".format(url, e))
     return False
 
 # Baca file target.txt untuk mendapatkan daftar target URL
 try:
     with open(target_file, 'r') as f:
         targets = f.read().splitlines()
-except FileNotFoundError:
-    print(f"File {target_file} tidak ditemukan.")
+except IOError:
+    print("File {} tidak ditemukan.".format(target_file))
     exit()
 
 # Baca file wordlist.txt untuk mendapatkan daftar endpoint shell
 try:
     with open(wordlist_file, 'r') as f:
         wordlist = f.read().splitlines()
-except FileNotFoundError:
-    print(f"File {wordlist_file} tidak ditemukan.")
+except IOError:
+    print("File {} tidak ditemukan.".format(wordlist_file))
     exit()
 
 # Buka file untuk menuliskan hasil
 with open(result_file, 'w') as result:
     # Mulai proses scanning setiap target
     for target in targets:
-        print(f"\nScanning target: {target}")
-        result.write(f"\nScanning target: {target}\n")
+        print("\nScanning target: {}".format(target))
+        result.write("\nScanning target: {}\n".format(target))
         
         found_any = False
         
@@ -61,14 +61,14 @@ with open(result_file, 'w') as result:
             
             # Cek apakah URL valid dan dapat diakses (status code 200)
             if check_url(url):
-                print(f"{Fore.GREEN}[Ditemukan] {url} (200 OK){Style.RESET_ALL}")
-                result.write(f"[Ditemukan] {url} (200 OK)\n")
+                print("{}[Ditemukan] {} (200 OK){}".format(Fore.GREEN, url, Style.RESET_ALL))
+                result.write("[Ditemukan] {} (200 OK)\n".format(url))
                 found_any = True
             else:
-                print(f"{Fore.RED}[Tidak ditemukan] {url}{Style.RESET_ALL}")
+                print("{}[Tidak ditemukan] {}{}".format(Fore.RED, url, Style.RESET_ALL))
         
         if not found_any:
-            print(f"{Fore.YELLOW}[Tidak ada shell yang ditemukan untuk target ini]{Style.RESET_ALL}")
-            result.write(f"[Tidak ada shell yang ditemukan untuk target ini]\n")
+            print("{}[Tidak ada shell yang ditemukan untuk target ini]{}".format(Fore.YELLOW, Style.RESET_ALL))
+            result.write("[Tidak ada shell yang ditemukan untuk target ini]\n")
 
-print(f"\nProses selesai. Hasil disimpan di {result_file}")
+print("\nProses selesai. Hasil disimpan di {}".format(result_file))
