@@ -5,13 +5,13 @@
 import requests
 from colorama import Fore, Style, init
 import os
-import threading
+import concurrent.futures
 
 # Inisialisasi colorama
 init(autoreset=True)
 
 REQUEST_TIMEOUT = 3  # Timeout permintaan lebih singkat (dalam detik)
-MAX_THREADS = 10     # Jumlah thread maksimal untuk paralelisasi
+MAX_THREADS = 50     # Jumlah thread maksimal untuk paralelisasi, lebih tinggi agar proses lebih cepat
 
 # Inisialisasi session untuk connection pooling
 session = requests.Session()
@@ -19,7 +19,7 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 
 def banner():
-    """Menampilkan banner tim tanpa pyfiglet (langsung teks sederhana)."""
+    """Menampilkan banner tim dengan tampilan sesuai permintaan."""
     print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
     print(f"{Fore.GREEN}Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
     print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
@@ -50,39 +50,40 @@ def load_wordlist(wordlist_file):
         return []
 
 
-def brute_force_worker(target, paths, results):
-    """Thread worker untuk melakukan brute force pada target."""
+def brute_force_worker(target, paths):
+    """Melakukan brute force pada target dengan mengecek URL."""
+    found = []
     for path in paths:
         url = f"{target.rstrip('/')}/{path}"
         result = check_url(url)
         if result:
-            results.append(result)
+            found.append(result)
             print(f"{Fore.GREEN}[FOUND] {url} (200 OK){Style.RESET_ALL}")
         else:
             print(f"{Fore.RED}[NOT FOUND] {url}{Style.RESET_ALL}")
+    return found
 
 
 def brute_force(target, paths):
     """Melakukan brute force untuk menemukan shell di target dengan paralelisasi menggunakan thread."""
     print(f"\n{Fore.BLUE}[INFO] Attack target: {target}{Style.RESET_ALL}")
-
     results = []
-    threads = []
 
-    # Membagi wordlist menjadi beberapa bagian untuk di proses paralel
-    chunk_size = len(paths) // MAX_THREADS
-    for i in range(0, len(paths), chunk_size):
-        chunk = paths[i:i+chunk_size]
-        thread = threading.Thread(target=brute_force_worker, args=(target, chunk, results))
-        threads.append(thread)
-        thread.start()
+    # Membagi wordlist menjadi beberapa bagian untuk diproses secara paralel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        # Membagi wordlist menjadi beberapa bagian untuk dieksekusi oleh worker
+        futures = []
+        chunk_size = len(paths) // MAX_THREADS + 1
+        for i in range(0, len(paths), chunk_size):
+            chunk = paths[i:i + chunk_size]
+            futures.append(executor.submit(brute_force_worker, target, chunk))
 
-    # Menunggu semua thread selesai
-    for thread in threads:
-        thread.join()
+        # Mengumpulkan hasil dari setiap worker
+        for future in concurrent.futures.as_completed(futures):
+            results.extend(future.result())
 
     if results:
-        print(f"{Fore.GREEN}[INFO] Done √ {len(results)} shell.{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}[INFO] Done √ {len(results)} shell ditemukan.{Style.RESET_ALL}")
     else:
         print(f"{Fore.YELLOW}[NO SHELL FOUND] Yha kosong :({Style.RESET_ALL}")
 
