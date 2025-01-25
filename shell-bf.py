@@ -6,6 +6,7 @@ import requests
 from colorama import Fore, Style, init
 import os
 import concurrent.futures
+import time
 
 # Inisialisasi colorama
 init(autoreset=True)
@@ -20,12 +21,19 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-    print(f"{Fore.BLUE}" + "=" * 78 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.GREEN}Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
-    print(f"{Fore.BLUE}" + "=" * 78 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}by mr.rius{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}contoh :{Style.RESET_ALL}\n")
-    print(f"{Fore.YELLOW}( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
+     print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
+    print(f"{Fore.BLUE}      " + "=" * 30 + f"{Style.RESET_ALL}\n")
+    print(" ")
+    print(" ")
+    print(f"{Fore.YELLOW}       by mr.rius{Style.RESET_ALL}\n")
+    print(" ")
+    print(f"{Fore.YELLOW}       contoh :{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}          ( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
+    print(" ")
+    print(" ")
+    print(" ")
+    print(" ")
+
 
 
 def check_url(url):
@@ -60,6 +68,8 @@ def brute_force_worker(target, paths):
             found.append(result)
             print(f"{Fore.GREEN}[FOUND] {url} (200 OK){Style.RESET_ALL}")
         else:
+            # Menambahkan sedikit delay agar tidak terlalu cepat dan lebih "lancar"
+            time.sleep(0.1)  # Adjust delay for balance between speed and brute force reliability
             print(f"{Fore.RED}[NOT FOUND] {url}{Style.RESET_ALL}")
     return found
 
@@ -71,7 +81,6 @@ def brute_force(target, paths):
 
     # Membagi wordlist menjadi beberapa bagian untuk diproses secara paralel
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-        # Membagi wordlist menjadi beberapa bagian untuk dieksekusi oleh worker
         futures = []
         chunk_size = len(paths) // MAX_THREADS + 1
         for i in range(0, len(paths), chunk_size):
