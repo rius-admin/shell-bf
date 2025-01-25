@@ -19,17 +19,11 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 
 def banner():
-    """Menampilkan banner tim dengan tampilan sesuai permintaan."""
-    # Gunakan pyfiglet untuk membuat teks besar untuk nama tim
-    team_name = pyfiglet.figlet_format("Cyber Sederhana Team", font="slant")
-    
+    """Menampilkan banner tim tanpa pyfiglet (langsung teks sederhana)."""
     print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
-    print(f"{Fore.GREEN}" + team_name)  # Menampilkan nama tim dalam ASCII Art
+    print(f"{Fore.GREEN}Cyber Sederhana Team{Style.RESET_ALL}")  # Menampilkan nama tim
     print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
-    print (" ")
-    print (" ") 
     print(f"{Fore.ORANGE}by mr.rius{Style.RESET_ALL}\n")
-    print (" ") 
     print(f"{Fore.YELLOW}contoh :{Style.RESET_ALL}\n")
     print(f"{Fore.YELLOW}( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
 
@@ -94,16 +88,20 @@ def brute_force(target, paths):
 
 
 def main():
+    # Membersihkan layar sebelum memulai
+    os.system('clear')  # untuk Linux/macOS
+    # os.system('cls')  # untuk Windows, gunakan ini jika di cmd atau PowerShell
+
+    # Menampilkan banner dan meminta URL target
+    banner()
+
+    # Memuat file wordlist.txt
+    wordlist_file = 'wordlist.txt'
+    wordlist = load_wordlist(wordlist_file)
+    if not wordlist:
+        return  # Jika tidak ada wordlist yang valid, keluar dari program
+
     while True:
-        # Menampilkan banner dan meminta URL target
-        banner()
-
-        # Memuat file wordlist.txt
-        wordlist_file = 'wordlist.txt'
-        wordlist = load_wordlist(wordlist_file)
-        if not wordlist:
-            return  # Jika tidak ada wordlist yang valid, keluar dari program
-
         target = input(f"{Fore.GREEN} Scan-bf ==> {Style.RESET_ALL}").strip()
 
         # Validasi input URL
