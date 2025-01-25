@@ -1,78 +1,103 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Custom Admin Finder Brute Force
+# Brute Shell Finder by Cyber Sederhana Team
 
+import os
 import requests
 from colorama import Fore, Style, init
-import time
 
 # Inisialisasi colorama
 init(autoreset=True)
 
-# File konfigurasi
-TARGET_FILE = "target.txt"  # Daftar target URL (satu per baris)
-WORDLIST_FILE = "wordlist.txt"  # Daftar path untuk admin (file wordlist)
-OUTPUT_FILE = "result_admin_brute.txt"  # File untuk menyimpan hasil
-REQUEST_TIMEOUT = 5  # Timeout request dalam detik
+# Konfigurasi file
+TARGET_FILE = "target.txt"  # Daftar target URL
+WORDLIST_FILE = "wordlist.txt"  # Daftar endpoint shell
+OUTPUT_FILE = "result_shell.txt"  # File untuk menyimpan hasil
+REQUEST_TIMEOUT = 5  # Timeout permintaan dalam detik
 
-# Fungsi untuk memeriksa apakah URL mengembalikan status 200
+
+def clear_screen():
+    """Membersihkan layar terminal."""
+    os.system('clear' if os.name == 'posix' else 'cls')
+
+
+def banner():
+    """Menampilkan banner tim."""
+    clear_screen()
+    print(f"{Fore.CYAN}" + "=" * 40)
+    print("         Cyber Sederhana Team")
+    print("=" * 40 + f"{Style.RESET_ALL}\n")
+    print(f"{Fore.YELLOW}Gunakan script ini hanya untuk tujuan legal dan etis.{Style.RESET_ALL}\n")
+
+
 def check_url(url):
+    """Memeriksa apakah URL memberikan status 200."""
     try:
-        start_time = time.time()
         response = requests.get(url, timeout=REQUEST_TIMEOUT)
-        response_time = round(time.time() - start_time, 2)  # Waktu respons
         if response.status_code == 200:
-            return True, response_time
-        return False, response_time
+            return True
     except requests.exceptions.RequestException:
-        return False, 0
+        pass
+    return False
 
-# Fungsi utama untuk melakukan brute force dengan target dan paths
-def brute_force_admin(targets, paths):
+
+def brute_force(targets, paths):
+    """Melakukan brute force untuk menemukan shell di target."""
     results = []
     for target in targets:
-        print(f"\nScanning target: {target}")
+        print(f"\n{Fore.BLUE}[INFO] Scanning target: {target}{Style.RESET_ALL}")
         found = False
         for path in paths:
             url = f"{target.rstrip('/')}/{path}"
-            is_found, response_time = check_url(url)
-            
-            # Jika ditemukan, tampilkan hasil dengan waktu respons
-            if is_found:
-                print(f"{Fore.GREEN}[FOUND] {url} - Response time: {response_time}s{Style.RESET_ALL}")
-                results.append(f"[FOUND] {url} - Response time: {response_time}s")
+            if check_url(url):
+                print(f"{Fore.GREEN}[FOUND] {url} (200 OK){Style.RESET_ALL}")
+                results.append(f"[FOUND] {url} (200 OK)")
                 found = True
             else:
-                # Jika tidak ditemukan, hanya tampilkan "not found"
                 print(f"{Fore.RED}[NOT FOUND] {url}{Style.RESET_ALL}")
-        
         if not found:
-            print(f"{Fore.YELLOW}[NO ADMIN PAGE FOUND] for {target}{Style.RESET_ALL}")
-            results.append(f"[NO ADMIN PAGE FOUND] {target}")
-    
+            print(f"{Fore.YELLOW}[NO SHELL FOUND] for {target}{Style.RESET_ALL}")
+            results.append(f"[NO SHELL FOUND] {target}")
     return results
 
+
 def main():
-    try:
-        # Membaca file target (URL)
-        with open(TARGET_FILE, "r") as f:
-            targets = f.read().splitlines()
-
-        # Membaca file wordlist (path admin)
-        with open(WORDLIST_FILE, "r") as f:
-            paths = f.read().splitlines()
-
-        # Menjalankan brute force
-        results = brute_force_admin(targets, paths)
-
-        # Menyimpan hasil ke file output
-        with open(OUTPUT_FILE, "w") as f:
-            f.write("\n".join(results))
-        
-        print(f"\n{Fore.GREEN}Proses selesai. Hasil disimpan di {OUTPUT_FILE}{Style.RESET_ALL}")
+    banner()
+    print(f"{Fore.CYAN}Ketik 'start' untuk memulai proses brute shell.{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Ketik 'exit' untuk keluar dari program.{Style.RESET_ALL}")
     
-    except IOError as e:
-        print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
+    while True:
+        command = input(f"{Fore.GREEN}Cyber Sederhana Team >> {Style.RESET_ALL}").strip().lower()
+        
+        if command == "start":
+            try:
+                # Membaca file target
+                with open(TARGET_FILE, "r") as f:
+                    targets = f.read().splitlines()
+
+                # Membaca file wordlist
+                with open(WORDLIST_FILE, "r") as f:
+                    paths = f.read().splitlines()
+
+                # Memulai brute force
+                results = brute_force(targets, paths)
+
+                # Menyimpan hasil ke file
+                with open(OUTPUT_FILE, "w") as f:
+                    f.write("\n".join(results))
+                print(f"\n{Fore.GREEN}Proses selesai. Hasil disimpan di {OUTPUT_FILE}{Style.RESET_ALL}")
+            except FileNotFoundError as e:
+                print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
+            except Exception as e:
+                print(f"{Fore.RED}Error tak terduga: {e}{Style.RESET_ALL}")
+        
+        elif command == "exit":
+            print(f"{Fore.YELLOW}Keluar dari program. Terima kasih.{Style.RESET_ALL}")
+            break
+
+        else:
+            print(f"{Fore.RED}Perintah tidak dikenal. Ketik 'start' untuk memulai atau 'exit' untuk keluar.{Style.RESET_ALL}")
+
 
 if __name__ == "__main__":
     main()
