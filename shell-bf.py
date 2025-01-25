@@ -6,7 +6,6 @@ import requests
 from colorama import Fore, Style, init
 import os
 import threading
-import pyfiglet  # Modul untuk ASCII Art
 
 # Inisialisasi colorama
 init(autoreset=True)
