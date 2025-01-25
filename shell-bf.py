@@ -24,12 +24,12 @@ def banner():
     # Gunakan pyfiglet untuk membuat teks besar untuk nama tim
     team_name = pyfiglet.figlet_format("Cyber Sederhana Team", font="slant")
     
-    print(f"{Fore.BLUE}" + "=" * 65)
+    print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
     print(f"{Fore.GREEN}" + team_name)  # Menampilkan nama tim dalam ASCII Art
     print(f"{Fore.BLUE}" + "=" * 65 + f"{Style.RESET_ALL}\n")
     print (" ")
     print (" ") 
-    print(f"{Fore.YELLOW}by mr.rius{Style.RESET_ALL}\n")
+    print(f"{Fore.ORANGE}by mr.rius{Style.RESET_ALL}\n")
     print (" ") 
     print(f"{Fore.YELLOW}contoh :{Style.RESET_ALL}\n")
     print(f"{Fore.YELLOW}( https://cybersederhanateam.id ){Style.RESET_ALL}\n")
