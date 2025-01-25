@@ -1,68 +1,78 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Brute Force Shell Finder
+# Custom Admin Finder Brute Force
 
 import requests
 from colorama import Fore, Style, init
+import time
 
 # Inisialisasi colorama
 init(autoreset=True)
 
 # File konfigurasi
-TARGET_FILE = "target.txt"  # File berisi target URL
-WORDLIST_FILE = "wordlist.txt"  # File berisi daftar endpoint shell
-OUTPUT_FILE = "result_shell.txt"  # File untuk menyimpan hasil
+TARGET_FILE = "target.txt"  # Daftar target URL (satu per baris)
+WORDLIST_FILE = "wordlist.txt"  # Daftar path untuk admin (file wordlist)
+OUTPUT_FILE = "result_admin_brute.txt"  # File untuk menyimpan hasil
 REQUEST_TIMEOUT = 5  # Timeout request dalam detik
 
+# Fungsi untuk memeriksa apakah URL mengembalikan status 200
 def check_url(url):
-    """Memeriksa apakah URL memberikan status kode 200."""
     try:
+        start_time = time.time()
         response = requests.get(url, timeout=REQUEST_TIMEOUT)
+        response_time = round(time.time() - start_time, 2)  # Waktu respons
         if response.status_code == 200:
-            return True
+            return True, response_time
+        return False, response_time
     except requests.exceptions.RequestException:
-        pass
-    return False
+        return False, 0
 
-def brute_force(targets, endpoints):
-    """Melakukan brute force pada target URL menggunakan endpoint."""
+# Fungsi utama untuk melakukan brute force dengan target dan paths
+def brute_force_admin(targets, paths):
     results = []
     for target in targets:
-        print("\nScanning target: {}".format(target))
+        print(f"\nScanning target: {target}")
         found = False
-        for endpoint in endpoints:
-            url = target.rstrip("/") + "/" + endpoint
-            if check_url(url):
-                print("{}[FOUND] {} (200 OK){}".format(Fore.GREEN, url, Style.RESET_ALL))
-                results.append("[FOUND] {} (200 OK)".format(url))
+        for path in paths:
+            url = f"{target.rstrip('/')}/{path}"
+            is_found, response_time = check_url(url)
+            
+            # Jika ditemukan, tampilkan hasil dengan waktu respons
+            if is_found:
+                print(f"{Fore.GREEN}[FOUND] {url} - Response time: {response_time}s{Style.RESET_ALL}")
+                results.append(f"[FOUND] {url} - Response time: {response_time}s")
                 found = True
             else:
-                print("{}[NOT FOUND] {}{}".format(Fore.RED, url, Style.RESET_ALL))
+                # Jika tidak ditemukan, hanya tampilkan "not found"
+                print(f"{Fore.RED}[NOT FOUND] {url}{Style.RESET_ALL}")
+        
         if not found:
-            print("{}[NO SHELL FOUND]{}".format(Fore.YELLOW, Style.RESET_ALL))
-            results.append("[NO SHELL FOUND] {}".format(target))
+            print(f"{Fore.YELLOW}[NO ADMIN PAGE FOUND] for {target}{Style.RESET_ALL}")
+            results.append(f"[NO ADMIN PAGE FOUND] {target}")
+    
     return results
 
 def main():
     try:
-        # Membaca daftar target
+        # Membaca file target (URL)
         with open(TARGET_FILE, "r") as f:
             targets = f.read().splitlines()
 
-        # Membaca daftar endpoint
+        # Membaca file wordlist (path admin)
         with open(WORDLIST_FILE, "r") as f:
-            endpoints = f.read().splitlines()
+            paths = f.read().splitlines()
 
-        # Mulai brute force
-        results = brute_force(targets, endpoints)
+        # Menjalankan brute force
+        results = brute_force_admin(targets, paths)
 
-        # Simpan hasil
+        # Menyimpan hasil ke file output
         with open(OUTPUT_FILE, "w") as f:
             f.write("\n".join(results))
-        print("\n{}Proses selesai. Hasil disimpan di {}{}".format(Fore.GREEN, OUTPUT_FILE, Style.RESET_ALL))
-
+        
+        print(f"\n{Fore.GREEN}Proses selesai. Hasil disimpan di {OUTPUT_FILE}{Style.RESET_ALL}")
+    
     except IOError as e:
-        print("{}Error: {}{}".format(Fore.RED, e, Style.RESET_ALL))
+        print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     main()
