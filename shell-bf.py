@@ -25,9 +25,9 @@ def banner():
     print(" ")
     print(" ")
     print(" ")
-    print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}\n")  # Menampilkan nama tim
-    print("                     by mr.rius")
+    print(f"{Fore.GREEN}       Cyber Sederhana Team{Style.RESET_ALL}\n") 
     print(f"{Fore.BLUE}      " + "=" * 22 + f"{Style.RESET_ALL}\n")
+    print("                  by mr.rius")
     print(" ")
     print(" ") 
     print(f"{Fore.YELLOW}       contoh :{Style.RESET_ALL}\n")
@@ -35,8 +35,6 @@ def banner():
     print(" ")
     print(" ")
     print(" ")
-    print(" ")
-
 
 
 def check_url(url):
