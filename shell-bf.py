@@ -23,13 +23,16 @@ def banner():
     """Menampilkan banner tim dengan tampilan sesuai permintaan."""
     print(" ")
     print(" ")
+    print(" ")
     print("       //  ")
-    print("       \\      /=============================\ ")
-    print("        ||    # |  --------------------      #\ ")
-    print("        ||##### |  Cyber Sederhana Team      ##] ")
-    print("        ||    # |  --------------------      #/ ")
-    print("         \\    \=============================/ ") 
+    print("       \\\      /=============================\ ")
+    print("        ||    # |  --------------------       #\ ")
+    print("        ||##### |  Cyber Sederhana Team       ##] ")
+    print("        ||    # |  --------------------       #/ ")
+    print("        \\\     \=============================/ ") 
     print("         // ")
+    print(" ")
+    print(" ")
     print(" ")
     print(" ")
     print(f"{Fore.YELLOW}       contoh :{Style.RESET_ALL}\n")
@@ -115,7 +118,7 @@ def main():
         return  # Jika tidak ada wordlist yang valid, keluar dari program
 
     while True:
-        target = input(f"{Fore.GREEN}      Scan-bf  ==> {Style.RESET_ALL}").strip()
+        target = input(f"{Fore.GREEN}       Scan-bf  ==> {Style.RESET_ALL}").strip()
 
         # Validasi input URL
         if not target.startswith("http://") and not target.startswith("https://"):
