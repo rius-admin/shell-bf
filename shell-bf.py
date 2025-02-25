@@ -15,7 +15,7 @@ MAX_THREADS = 80  # Jumlah maksimum thread untuk paralelisme
 def download_wordlist():
     """Mengunduh wordlist dari GitHub jika belum ada."""
     if not os.path.isfile(WORDLIST_FILE):
-        print(f"Mengunduh {WORDLIST_FILE} dari GitHub...")
+        print("Mengunduh {WORDLIST_FILE} dari GitHub...")
         try:
             response = requests.get(WORDLIST_URL)
             response.raise_for_status()
