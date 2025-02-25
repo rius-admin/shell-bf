@@ -11,11 +11,12 @@ import concurrent.futures
 init(autoreset=True)
 
 REQUEST_TIMEOUT = 3  # Timeout permintaan (dalam detik)
-MAX_THREADS = 99    # Jumlah thread maksimal untuk paralelisasi (meningkatkan kecepatan)
+MAX_THREADS = 99     # Jumlah thread maksimal untuk paralelisasi
 session = requests.Session()
 session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
+    os.system("cls" if os.name == "nt" else "clear")  # Membersihkan layar sebelum menampilkan banner
     print(Fore.CYAN + "        //  ")
     print("        \\\      /=============================\\ ")
     print("         ||    # |  --------------------      # \\ ")
@@ -49,7 +50,7 @@ def brute_force_worker(target, paths):
         result = check_url(url)
         if result:
             found.append(result)
-            print(Fore.GREEN + "[FOUND] " + result + Style.RESET_ALL)
+            print(Fore.GREEN + "[FOUND] " + result + Style.RESET_ALL)  # Menampilkan hanya jika ditemukan
     return found
 
 def brute_force(target, paths):
@@ -74,7 +75,6 @@ def brute_force(target, paths):
         print(Fore.YELLOW + "\n[NO SHELL FOUND] Yha kosong :(" + Style.RESET_ALL)
 
 def main():
-    os.system("cls" if os.name == "nt" else "clear")
     banner()
 
     wordlist_file = 'wordlist.txt'
