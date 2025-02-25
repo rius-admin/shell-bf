@@ -26,7 +26,8 @@ def banner():
     print("                           | | ")
     print("                        __/_/  ")
     print("=" * 69)
-
+    print(" ") 
+    print(" ") 
 def check_admin_panel(url, session):
     # Memeriksa apakah URL mengarah ke halaman admin
     try:
@@ -41,8 +42,7 @@ def find_admin():
     if not os.path.isfile(WORDLIST_FILE):
         print("Error: File '{}' tidak ditemukan.".format(WORDLIST_FILE))
         return
-     print(" ") 
-     print(" ") 
+        
     target = input("Masukkan target (contoh: target.com): ").strip()
 
     with open(WORDLIST_FILE, "r") as file:
