@@ -25,8 +25,9 @@ def banner():
          ||    # |  --------------------      # / 
           \\\    \=============================/  
           // 
+          """) 
           
-       {Fore.YELLOW}contoh : https://cybersederhanateam.id {Style.RESET_ALL} """)
+       {Fore.YELLOW}contoh : https://cybersederhanateam.id {Style.RESET_ALL}
 
 def check_url(url):
     """Memeriksa apakah URL memberikan status 200."""
