@@ -8,7 +8,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 
 WORDLIST_FILE = 'wordlist.txt'
-MAX_THREADS = 100  # Jumlah maksimum thread untuk paralelisme
+MAX_THREADS = 80 
 
 def clear_screen():
     # Membersihkan layar konsol
