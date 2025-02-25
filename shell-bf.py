@@ -5,7 +5,7 @@
 
 import requests
 import os
-from concurrent.futures import ThreadPoolExecutor
+from urllib2 import Request, urlopen, URLError, HTTPError
 
 WORDLIST_FILE = 'wordlist.txt'
 MAX_THREADS = 80 
