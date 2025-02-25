@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Brute Shell Finder by Cyber Sederhana Team
 
@@ -19,15 +19,15 @@ def banner():
     """Menampilkan banner tim."""
     print(f"""{Fore.CYAN}
         //  
-        \\\      /=============================\ 
-         ||    # |  --------------------      #\\ 
-         ||##### |  Cyber Sederhana Team      ##] 
-         ||    # |  --------------------      #/ 
+        \\\      /=============================\\ 
+         ||    # |  --------------------      # \\ 
+         ||##### |  Cyber Sederhana Team      ## ] 
+         ||    # |  --------------------      # / 
           \\\    \=============================/  
           // 
           
        {Fore.YELLOW}contoh : ( https://cybersederhanateam.id ){Style.RESET_ALL}
-    (""")
+    """)  # <<<<< yes
 
 def check_url(url):
     """Memeriksa apakah URL memberikan status 200."""
