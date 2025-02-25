@@ -27,11 +27,12 @@ def banner():
           // 
           
        {Fore.YELLOW}contoh : ( https://cybersederhanateam.id ){Style.RESET_ALL}
+    """)
 
 def check_url(url):
     """Memeriksa apakah URL memberikan status 200."""
     try:
-        response = session.get(url, timeout=REQUEST_TIMEOUT)
+        response = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=False)
         if response.status_code == 200:
             return url
     except requests.exceptions.RequestException:
@@ -62,9 +63,13 @@ def brute_force(target, paths):
     print(f"\n{Fore.BLUE}[INFO] Attack target: {target}{Style.RESET_ALL}")
     results = []
 
+    if not paths:
+        print(f"{Fore.RED}[ERROR] Wordlist kosong!{Style.RESET_ALL}")
+        return
+
+    chunk_size = max(len(paths) // MAX_THREADS, 1)  # Hindari ZeroDivisionError
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         futures = []
-        chunk_size = len(paths) // MAX_THREADS + 1
         for i in range(0, len(paths), chunk_size):
             chunk = paths[i:i + chunk_size]
             futures.append(executor.submit(brute_force_worker, target, chunk))
@@ -80,8 +85,8 @@ def brute_force(target, paths):
         print(f"\n{Fore.YELLOW}[NO SHELL FOUND] Yha kosong :({Style.RESET_ALL}")
 
 def main():
-    os.system('clear')  # Bersihkan layar (Linux/macOS)
-    # os.system('cls')  # Bersihkan layar (Windows)
+    """Fungsi utama program."""
+    os.system("cls" if os.name == "nt" else "clear")  # Bersihkan layar sebelum memulai
     banner()
 
     wordlist_file = 'wordlist.txt'
@@ -102,7 +107,8 @@ def main():
         if continue_prompt != 'y':
             print(f"{Fore.GREEN}Thx udah mampir!{Style.RESET_ALL}")
             break
-        os.system('clear')  # Bersihkan layar
+
+        os.system("cls" if os.name == "nt" else "clear")  # Bersihkan layar setelah eksekusi ulang
 
 if __name__ == "__main__":
     main()
