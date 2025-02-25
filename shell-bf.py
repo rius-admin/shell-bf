@@ -1,41 +1,54 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+# Script by DarkVairous
+# Edited by Mr.Rius
+
 import requests
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-# Konfigurasi
-TARGET_URL = 'http://contoh.com'  # Ganti dengan URL target
-WORDLIST_FILE = 'wordlist.txt'    # Pastikan file wordlist.txt berada di direktori yang sama
-MAX_THREADS = 50                  # Jumlah maksimum thread untuk paralelisme
+def banner():
+    print("=" * 69)
+    print("                _                                        ")
+    print("               | | ___   __ _       ___  ___ __ _ _ __   ")
+    print("               | |/ _ \\ / _` |-----/ __|/ __/ _` | '_ \\ ")
+    print("               | | (_) | (_| |-----\\__ \\ (_| (_| | | | |")
+    print("               |_|\\___/ \\__, |-----|___/\\___\\__,_|_| |_|")
+    print("                           | | ")
+    print("                        __/_/  ")
+    print("=" * 69)
 
-# Fungsi untuk memeriksa keberadaan halaman admin
-def check_admin_path(path):
-    url = f"{TARGET_URL.rstrip('/')}/{path.lstrip('/')}"
+def check_admin_panel(url, session):
     try:
-        response = requests.get(url, timeout=5)
+        response = session.get(url, timeout=5)
         if response.status_code == 200:
-            print(f"[Ditemukan] {url}")
-            return url
+            print(f"[Ditemukan] => {url}")
     except requests.RequestException:
         pass
-    return None
 
-# Memuat wordlist
-if not os.path.isfile(WORDLIST_FILE):
-    print(f"File '{WORDLIST_FILE}' tidak ditemukan.")
-    exit()
+def find_admin():
+    wordlist_file = "wordlist.txt"
+    target = input("Masukkan target (contoh: target.com): ").strip()
 
-with open(WORDLIST_FILE, 'r') as file:
-    paths = [line.strip() for line in file if line.strip()]
+    if not os.path.isfile(wordlist_file):
+        print(f"File '{wordlist_file}' tidak ditemukan.")
+        return
 
-# Menggunakan ThreadPoolExecutor untuk mempercepat proses
-found_paths = []
-with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-    results = executor.map(check_admin_path, paths)
-    found_paths = [result for result in results if result]
+    with open(wordlist_file, "r") as file:
+        paths = [line.strip() for line in file if line.strip()]
 
-if found_paths:
-    print("\nHalaman admin yang ditemukan:")
-    for path in found_paths:
-        print(path)
-else:
-    print("\nTidak ditemukan halaman admin.")
+    if not paths:
+        print("Wordlist kosong atau tidak valid.")
+        return
+
+    print("\nMemulai pemindaian...\n")
+
+    session = requests.Session()
+    with ThreadPoolExecutor(max_workers=50) as executor:
+        for path in paths:
+            url = f"http://{target}/{path}"
+            executor.submit(check_admin_panel, url, session)
+
+if __name__ == "__main__":
+    banner()
+    find_admin()
