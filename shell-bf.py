@@ -1,51 +1,73 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-#Script by DarkVairous
-#Editor recode Mr.Rius
-from urllib2 import Request, urlopen, URLError, HTTPError
+# Script by DarkVairous
+# Edited by Mr.Rius
 
-def Space(j):
-	i = 0
-	while i<=j:
-		print " ",
-		i+=1
+import requests
+import os
+from concurrent.futures import ThreadPoolExecutor
 
-print "===================================================================== "
-print "                _                                        "
-print "               | | ___   __ _       ___  ___ __ _ _ __   "
-print "               | |/ _ \ / _` |-----/ __|/ __/ _` | '_  \ "
-print "               | | (_) | (_| |-----\__ \ (_| (_| | | | | "
-print "               |_|\___/ \__, |-----|___/\___\__,_|_| |_| "
-print "                           | | "
-print "                        __/_/  "
-print "		"           
-print "===================================================================== "
-def findAdmin():
-	f = open("wordlist.txt","r");
-	link = raw_input("contoh ; target.co  \n bot-robots(scan) : ")
-	print "   "
-	print "   "
-	print "\n\nbot-robots(scan) : \n"
-	while True:
-		sub_link = f.readline()
-		if not sub_link:
-			break
-		req_link = "http://"+link+"/"+sub_link
-		req = Request(req_link)
-		try:
-			response = urlopen(req)
-		except HTTPError as e:
-			continue
-		except URLError as e:
-			continue
-		else:
-			print "hasil  => ",req_link
+# URL GitHub tempat wordlist.txt disimpan
+WORDLIST_URL = 'https://github.com/rius-admin/shell-bf/blob/main/wordlist.txt'
+WORDLIST_FILE = 'wordlist.txt'
+MAX_THREADS = 80  # Jumlah maksimum thread untuk paralelisme
 
-def Credit():
-	Space(9); print "  ------------------------"
-	Space(9); print "[•] Cyber Sederhana Team [•]"
-	Space(9); print "  ------------------------"
-	Space(9); print " "
+def download_wordlist():
+    """Mengunduh wordlist dari GitHub jika belum ada."""
+    if not os.path.isfile(WORDLIST_FILE):
+        print(f"Mengunduh {WORDLIST_FILE} dari GitHub...")
+        try:
+            response = requests.get(WORDLIST_URL)
+            response.raise_for_status()
+            with open(WORDLIST_FILE, 'wb') as file:
+                file.write(response.content)
+            print("Wordlist berhasil diunduh.\n")
+        except requests.RequestException as e:
+            print(f"Error saat mengunduh wordlist: {e}")
+            exit(1)
 
-Credit()
-findAdmin()
+def banner():
+    """Menampilkan banner aplikasi."""
+    os.system("cls" if os.name == "nt" else "clear")
+    print("=" * 69)
+    print("                _                                        ")
+    print("               | | ___   __ _       ___  ___ __ _ _ __   ")
+    print("               | |/ _ \\ / _` |-----/ __|/ __/ _` | '_ \\ ")
+    print("               | | (_) | (_| |-----\\__ \\ (_| (_| | | | |")
+    print("               |_|\\___/ \\__, |-----|___/\\___\\__,_|_| |_|")
+    print("                           | | ")
+    print("                        __/_/  ")
+    print("=" * 69)
+
+def check_admin_panel(url, session):
+    """Memeriksa apakah URL mengarah ke halaman admin."""
+    try:
+        response = session.get(url, timeout=5)
+        if response.status_code == 200:
+            print(f"[Ditemukan] => {url}")
+    except requests.RequestException:
+        pass
+
+def find_admin():
+    """Fungsi utama untuk menemukan halaman admin."""
+    download_wordlist()
+    target = input("Masukkan target (contoh: target.com): ").strip()
+
+    with open(WORDLIST_FILE, "r") as file:
+        paths = [line.strip() for line in file if line.strip()]
+
+    if not paths:
+        print("Wordlist kosong atau tidak valid.")
+        return
+
+    print("\nMemulai pemindaian...\n")
+
+    session = requests.Session()
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        for path in paths:
+            url = f"http://{target}/{path}"
+            executor.submit(check_admin_panel, url, session)
+
+if __name__ == "__main__":
+    banner()
+    find_admin()
