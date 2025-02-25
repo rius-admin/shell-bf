@@ -7,28 +7,16 @@ import requests
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-# URL GitHub tempat wordlist.txt disimpan
-WORDLIST_URL = 'https://github.com/rius-admin/shell-bf/blob/main/wordlist.txt'
 WORDLIST_FILE = 'wordlist.txt'
-MAX_THREADS = 80  # Jumlah maksimum thread untuk paralelisme
+MAX_THREADS = 100  # Jumlah maksimum thread untuk paralelisme
 
-def download_wordlist():
-    """Mengunduh wordlist dari GitHub jika belum ada."""
-    if not os.path.isfile(WORDLIST_FILE):
-        print("Mengunduh {WORDLIST_FILE} dari GitHub...")
-        try:
-            response = requests.get(WORDLIST_URL)
-            response.raise_for_status()
-            with open(WORDLIST_FILE, 'wb') as file:
-                file.write(response.content)
-            print("Wordlist berhasil diunduh.\n")
-        except requests.RequestException as e:
-            print("Error saat mengunduh wordlist: {e}")
-            exit(1)
+def clear_screen():
+    # Membersihkan layar konsol
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def banner():
-    """Menampilkan banner aplikasi."""
-    os.system("cls" if os.name == "nt" else "clear")
+    # Menampilkan banner aplikasi
+    clear_screen()
     print("=" * 69)
     print("                _                                        ")
     print("               | | ___   __ _       ___  ___ __ _ _ __   ")
@@ -40,17 +28,20 @@ def banner():
     print("=" * 69)
 
 def check_admin_panel(url, session):
-    """Memeriksa apakah URL mengarah ke halaman admin."""
+    # Memeriksa apakah URL mengarah ke halaman admin
     try:
         response = session.get(url, timeout=5)
         if response.status_code == 200:
-            print("[Ditemukan] => {url}")
+            print("[Ditemukan] => {}".format(url))
     except requests.RequestException:
         pass
 
 def find_admin():
-    """Fungsi utama untuk menemukan halaman admin."""
-    download_wordlist()
+    # Fungsi utama untuk menemukan halaman admin
+    if not os.path.isfile(WORDLIST_FILE):
+        print("Error: File '{}' tidak ditemukan.".format(WORDLIST_FILE))
+        return
+
     target = input("Masukkan target (contoh: target.com): ").strip()
 
     with open(WORDLIST_FILE, "r") as file:
@@ -65,7 +56,7 @@ def find_admin():
     session = requests.Session()
     with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         for path in paths:
-            url = "http://{target}/{path}"
+            url = "http://{}/{}".format(target, path)
             executor.submit(check_admin_panel, url, session)
 
 if __name__ == "__main__":
