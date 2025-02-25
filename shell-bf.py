@@ -25,7 +25,7 @@ def banner():
          ||    # |  --------------------      # / 
           \\\    \=============================/  
           // 
-          """) 
+          
           
        {Fore.YELLOW}contoh : https://cybersederhanateam.id {Style.RESET_ALL}
 
