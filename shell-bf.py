@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Brute Shell Finder by Cyber Sederhana Team
 
@@ -11,7 +11,7 @@ import concurrent.futures
 init(autoreset=True)
 
 REQUEST_TIMEOUT = 3  # Timeout permintaan (dalam detik)
-MAX_THREADS = 50     # Jumlah thread maksimal untuk paralelisasi
+MAX_THREADS = 100    # Jumlah thread maksimal untuk paralelisasi (meningkatkan kecepatan)
 session = requests.Session()
 session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
@@ -26,8 +26,8 @@ def banner():
           \\\    \=============================/  
           // 
           
-       {Fore.YELLOW}contoh : ( https://cybersederhanateam.id ){Style.RESET_ALL}
-    """)  # <<<<< yes
+       {Fore.YELLOW}contoh : https://cybersederhanateam.id {Style.RESET_ALL}
+    """)
 
 def check_url(url):
     """Memeriksa apakah URL memberikan status 200."""
@@ -56,6 +56,7 @@ def brute_force_worker(target, paths):
         result = check_url(url)
         if result:
             found.append(result)
+            print(f"{Fore.GREEN}[FOUND] {result}{Style.RESET_ALL}")
     return found
 
 def brute_force(target, paths):
@@ -77,8 +78,6 @@ def brute_force(target, paths):
 
     if results:
         print(f"\n{Fore.GREEN}[INFO] {len(results)} shell ditemukan:{Style.RESET_ALL}")
-        for url in results:
-            print(f"{Fore.GREEN}{url}{Style.RESET_ALL}")
     else:
         print(f"\n{Fore.YELLOW}[NO SHELL FOUND] Yha kosong :({Style.RESET_ALL}")
 
