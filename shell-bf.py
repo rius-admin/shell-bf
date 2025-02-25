@@ -1,54 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# Script by DarkVairous
-# Edited by Mr.Rius
+#Script by DarkVairous
+#Editor recode Mr.Rius
+from urllib2 import Request, urlopen, URLError, HTTPError
 
-import requests
-import os
-from concurrent.futures import ThreadPoolExecutor
+def Space(j):
+	i = 0
+	while i<=j:
+		print " ",
+		i+=1
 
-def banner():
-    print("=" * 69)
-    print("                _                                        ")
-    print("               | | ___   __ _       ___  ___ __ _ _ __   ")
-    print("               | |/ _ \\ / _` |-----/ __|/ __/ _` | '_ \\ ")
-    print("               | | (_) | (_| |-----\\__ \\ (_| (_| | | | |")
-    print("               |_|\\___/ \\__, |-----|___/\\___\\__,_|_| |_|")
-    print("                           | | ")
-    print("                        __/_/  ")
-    print("=" * 69)
+print "===================================================================== "
+print "                _                                        "
+print "               | | ___   __ _       ___  ___ __ _ _ __   "
+print "               | |/ _ \ / _` |-----/ __|/ __/ _` | '_  \ "
+print "               | | (_) | (_| |-----\__ \ (_| (_| | | | | "
+print "               |_|\___/ \__, |-----|___/\___\__,_|_| |_| "
+print "                           | | "
+print "                        __/_/  "
+print "		"           
+print "===================================================================== "
+def findAdmin():
+	f = open("wordlist.txt","r");
+	link = raw_input("contoh ; target.co  \n bot-robots(scan) : ")
+	print "   "
+	print "   "
+	print "\n\nbot-robots(scan) : \n"
+	while True:
+		sub_link = f.readline()
+		if not sub_link:
+			break
+		req_link = "http://"+link+"/"+sub_link
+		req = Request(req_link)
+		try:
+			response = urlopen(req)
+		except HTTPError as e:
+			continue
+		except URLError as e:
+			continue
+		else:
+			print "hasil  => ",req_link
 
-def check_admin_panel(url, session):
-    try:
-        response = session.get(url, timeout=5)
-        if response.status_code == 200:
-            print(f"[Ditemukan] => {url}")
-    except requests.RequestException:
-        pass
+def Credit():
+	Space(9); print "  ------------------------"
+	Space(9); print "[•] Cyber Sederhana Team [•]"
+	Space(9); print "  ------------------------"
+	Space(9); print " "
 
-def find_admin():
-    wordlist_file = "wordlist.txt"
-    target = input("Masukkan target (contoh: target.com): ").strip()
-
-    if not os.path.isfile(wordlist_file):
-        print(f"File '{wordlist_file}' tidak ditemukan.")
-        return
-
-    with open(wordlist_file, "r") as file:
-        paths = [line.strip() for line in file if line.strip()]
-
-    if not paths:
-        print("Wordlist kosong atau tidak valid.")
-        return
-
-    print("\nMemulai pemindaian...\n")
-
-    session = requests.Session()
-    with ThreadPoolExecutor(max_workers=50) as executor:
-        for path in paths:
-            url = f"http://{target}/{path}"
-            executor.submit(check_admin_panel, url, session)
-
-if __name__ == "__main__":
-    banner()
-    find_admin()
+Credit()
+findAdmin()
