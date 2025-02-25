@@ -23,7 +23,7 @@ def download_wordlist():
                 file.write(response.content)
             print("Wordlist berhasil diunduh.\n")
         except requests.RequestException as e:
-            print(f"Error saat mengunduh wordlist: {e}")
+            print("Error saat mengunduh wordlist: {e}")
             exit(1)
 
 def banner():
@@ -44,7 +44,7 @@ def check_admin_panel(url, session):
     try:
         response = session.get(url, timeout=5)
         if response.status_code == 200:
-            print(f"[Ditemukan] => {url}")
+            print("[Ditemukan] => {url}")
     except requests.RequestException:
         pass
 
@@ -65,7 +65,7 @@ def find_admin():
     session = requests.Session()
     with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         for path in paths:
-            url = f"http://{target}/{path}"
+            url = "http://{target}/{path}"
             executor.submit(check_admin_panel, url, session)
 
 if __name__ == "__main__":
