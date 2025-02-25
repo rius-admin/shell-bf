@@ -17,7 +17,7 @@ session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
     """Menampilkan banner tim."""
-    print(f"""
+    print(f"""{Fore.CYAN}
         //  
         \\\      /=============================\ 
          ||    # |  --------------------      #\\ 
@@ -42,8 +42,8 @@ def check_url(url):
 def load_wordlist(wordlist_file):
     """Memuat daftar endpoint shell dari file wordlist."""
     try:
-        with open(wordlist_file, 'r') as file:
-            return file.read().splitlines()
+        with open(wordlist_file, 'r', encoding='utf-8') as file:
+            return [line.strip() for line in file if line.strip()]
     except FileNotFoundError:
         print(f"{Fore.RED}Error: File {wordlist_file} tidak ditemukan!{Style.RESET_ALL}")
         return []
@@ -69,10 +69,8 @@ def brute_force(target, paths):
 
     chunk_size = max(len(paths) // MAX_THREADS, 1)  # Hindari ZeroDivisionError
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-        futures = []
-        for i in range(0, len(paths), chunk_size):
-            chunk = paths[i:i + chunk_size]
-            futures.append(executor.submit(brute_force_worker, target, chunk))
+        futures = [executor.submit(brute_force_worker, target, paths[i:i + chunk_size])
+                   for i in range(0, len(paths), chunk_size)]
 
         for future in concurrent.futures.as_completed(futures):
             results.extend(future.result())
