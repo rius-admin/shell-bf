@@ -1,102 +1,41 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# Brute Shell Finder by Cyber Sederhana Team
-
 import requests
-from colorama import Fore, Style, init
 import os
-import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
 
-# Inisialisasi colorama
-init(autoreset=True)
+# Konfigurasi
+TARGET_URL = 'http://contoh.com'  # Ganti dengan URL target
+WORDLIST_FILE = 'wordlist.txt'    # Pastikan file wordlist.txt berada di direktori yang sama
+MAX_THREADS = 50                  # Jumlah maksimum thread untuk paralelisme
 
-REQUEST_TIMEOUT = 3  
-MAX_THREADS = 99     
-session = requests.Session()
-session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
-
-def banner():
-    os.system("cls" if os.name == "nt" else "clear")
-    print(Fore.CYAN + "        //  ")
-    print("        \\\      /=============================\\ ")
-    print("         ||    # |  --------------------      # \\ ")
-    print("         ||##### |  Cyber Sederhana Team      ## ] ")
-    print("         ||    # |  --------------------      # / ")
-    print("          \\\    \=============================/  ")
-    print("          // ")
-    print(Fore.YELLOW + "       contoh : ( https://cybersederhanateam.id )" + Style.RESET_ALL)
-
-def check_url(url):
+# Fungsi untuk memeriksa keberadaan halaman admin
+def check_admin_path(path):
+    url = f"{TARGET_URL.rstrip('/')}/{path.lstrip('/')}"
     try:
-        response = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=False)
+        response = requests.get(url, timeout=5)
         if response.status_code == 200:
+            print(f"[Ditemukan] {url}")
             return url
-    except requests.exceptions.RequestException:
+    except requests.RequestException:
         pass
     return None
 
-def load_wordlist(wordlist_file):
-    try:
-        with open(wordlist_file, 'r', encoding='utf-8') as file:
-            return [line.strip() for line in file if line.strip()]
-    except FileNotFoundError:
-        print(Fore.RED + "Error: File " + wordlist_file + " tidak ditemukan!" + Style.RESET_ALL)
-        return []
+# Memuat wordlist
+if not os.path.isfile(WORDLIST_FILE):
+    print(f"File '{WORDLIST_FILE}' tidak ditemukan.")
+    exit()
 
-def brute_force_worker(target, paths):
-    found = []
-    for path in paths:
-        url = "{}/{}".format(target.rstrip('/'), path)  # Memperbaiki f-string jika Python lama
-        result = check_url(url)
-        if result:
-            found.append(result)
-            print(Fore.GREEN + "[FOUND] " + result + Style.RESET_ALL)  
-    return found
+with open(WORDLIST_FILE, 'r') as file:
+    paths = [line.strip() for line in file if line.strip()]
 
-def brute_force(target, paths):
-    print(Fore.BLUE + "\n[INFO] Attack target: " + target + Style.RESET_ALL)
-    results = []
+# Menggunakan ThreadPoolExecutor untuk mempercepat proses
+found_paths = []
+with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+    results = executor.map(check_admin_path, paths)
+    found_paths = [result for result in results if result]
 
-    if not paths:
-        print(Fore.RED + "[ERROR] Wordlist kosong!" + Style.RESET_ALL)
-        return
-
-    chunk_size = max(len(paths) // MAX_THREADS, 1)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-        futures = [executor.submit(brute_force_worker, target, paths[i:i + chunk_size])
-                   for i in range(0, len(paths), chunk_size)]
-
-        for future in concurrent.futures.as_completed(futures):
-            results.extend(future.result())
-
-    if results:
-        print(Fore.GREEN + "\n[INFO] " + str(len(results)) + " shell ditemukan:" + Style.RESET_ALL)
-    else:
-        print(Fore.YELLOW + "\n[NO SHELL FOUND] Yha kosong :(" + Style.RESET_ALL)
-
-def main():
-    banner()
-
-    wordlist_file = 'wordlist.txt'
-    wordlist = load_wordlist(wordlist_file)
-    if not wordlist:
-        return
-
-    while True:
-        target = input(Fore.GREEN + "       Scan-bf  ==> " + Style.RESET_ALL).strip()
-
-        if not target.startswith(("http://", "https://")):
-            print(Fore.RED + "Error: URL harus diawali dengan 'http://' atau 'https://'" + Style.RESET_ALL)
-            continue
-
-        brute_force(target, wordlist)
-
-        continue_prompt = input(Fore.YELLOW + "Ingin melakukan brute force lagi? (y/n): " + Style.RESET_ALL).strip().lower()
-        if continue_prompt != 'y':
-            print(Fore.GREEN + "Thx udah mampir!" + Style.RESET_ALL)
-            break
-
-        os.system("cls" if os.name == "nt" else "clear")
-
-if __name__ == "__main__":
-    main()
+if found_paths:
+    print("\nHalaman admin yang ditemukan:")
+    for path in found_paths:
+        print(path)
+else:
+    print("\nTidak ditemukan halaman admin.")
