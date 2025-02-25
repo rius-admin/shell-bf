@@ -20,7 +20,7 @@ def banner():
     print("=" * 69)
     print("                _                                        ")
     print("               | | ___   __ _       ___  ___ __ _ _ __   ")
-    print("               | |/ _ \\ / _` |-----/ __|/ __/ _` | '_ \\ ")
+    print("               | |/ _ \\ / _` |-----/ __|/ __/ _` | '_  \\ ")
     print("               | | (_) | (_| |-----\\__ \\ (_| (_| | | | |")
     print("               |_|\\___/ \\__, |-----|___/\\___\\__,_|_| |_|")
     print("                           | | ")
@@ -41,7 +41,8 @@ def find_admin():
     if not os.path.isfile(WORDLIST_FILE):
         print("Error: File '{}' tidak ditemukan.".format(WORDLIST_FILE))
         return
-
+     print(" ") 
+     print(" ") 
     target = input("Masukkan target (contoh: target.com): ").strip()
 
     with open(WORDLIST_FILE, "r") as file:
