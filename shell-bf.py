@@ -10,13 +10,13 @@ import concurrent.futures
 # Inisialisasi colorama
 init(autoreset=True)
 
-REQUEST_TIMEOUT = 3  # Timeout permintaan (dalam detik)
-MAX_THREADS = 99     # Jumlah thread maksimal untuk paralelisasi
+REQUEST_TIMEOUT = 3  
+MAX_THREADS = 99     
 session = requests.Session()
 session.headers.update({"User-Agent": "BruteShellFinder/1.0"})
 
 def banner():
-    os.system("cls" if os.name == "nt" else "clear")  # Membersihkan layar sebelum menampilkan banner
+    os.system("cls" if os.name == "nt" else "clear")
     print(Fore.CYAN + "        //  ")
     print("        \\\      /=============================\\ ")
     print("         ||    # |  --------------------      # \\ ")
@@ -46,11 +46,11 @@ def load_wordlist(wordlist_file):
 def brute_force_worker(target, paths):
     found = []
     for path in paths:
-        url = f"{target.rstrip('/')}/{path}"
+        url = "{}/{}".format(target.rstrip('/'), path)  # Memperbaiki f-string jika Python lama
         result = check_url(url)
         if result:
             found.append(result)
-            print(Fore.GREEN + "[FOUND] " + result + Style.RESET_ALL)  # Menampilkan hanya jika ditemukan
+            print(Fore.GREEN + "[FOUND] " + result + Style.RESET_ALL)  
     return found
 
 def brute_force(target, paths):
