@@ -29,7 +29,7 @@ def scan_paths(base_url, wordlist_file="wordlist.txt"):
     with open(wordlist_file, "r") as file:
         paths = [line.strip() for line in file if line.strip()]
 
-    print(f"Progress scan '{wordlist_file}' ke {base_url}...\n")
+    print(f"     Progress scan '{wordlist_file}' ke {base_url}...\n")
 
     # Menggunakan session untuk mempercepat koneksi HTTP
     with requests.Session() as session:
@@ -38,10 +38,10 @@ def scan_paths(base_url, wordlist_file="wordlist.txt"):
 
 # Program utama
 clear_screen()
+
 print(" ") 
-print(" ") 
-print("\nTarget: target-shell.net\n") 
-target_url = input("Scan > ").strip()
+print("     \nTarget: target-shell.net\n") 
+target_url = input("     Scan > ").strip()
 print(" ") 
 
 # Menambahkan skema (http://) jika belum ada
