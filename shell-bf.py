@@ -20,16 +20,16 @@ def scan_path(session, base_url, path):
     except requests.exceptions.RequestException:
         pass
 
-def scan_paths(base_url, path_file="wordlist.txt"):
+def scan_paths(base_url, wordlist_file="wordlist.txt"):
     """Memindai daftar path dengan menggunakan session reuse untuk mempercepat scanning."""
-    if not os.path.exists(path_file):
-        print(f"[!] File {path_file} tidak ditemukan.")
+    if not os.path.exists(wordlist_file):
+        print(f"[!] File {wordlist_file} tidak ditemukan.")
         return
 
-    with open(path_file, "r") as file:
+    with open(wordlist_file, "r") as file:
         paths = [line.strip() for line in file if line.strip()]
 
-    print(f"Memulai scan '{path_file}' ke {base_url}...\n")
+    print(f"Progress scan '{wordlist_file}' ke {base_url}...\n")
 
     # Menggunakan session untuk mempercepat koneksi HTTP
     with requests.Session() as session:
@@ -38,9 +38,11 @@ def scan_paths(base_url, path_file="wordlist.txt"):
 
 # Program utama
 clear_screen()
-print("     ) 
-print("\nTarget: shell-attack.com\n") 
+print(" ") 
+print(" ") 
+print("\nTarget: target-shell.net\n") 
 target_url = input("Scan > ").strip()
+print(" ") 
 
 # Menambahkan skema (http://) jika belum ada
 if not target_url.startswith(("http://", "https://")):
